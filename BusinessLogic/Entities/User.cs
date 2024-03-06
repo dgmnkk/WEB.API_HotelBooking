@@ -2,6 +2,7 @@
 
 namespace DataAccess.Data
 {
+    public enum ClientType { Node, Regular, Premium }
     public class User : IdentityUser
     {
         public string Name { get; set; }

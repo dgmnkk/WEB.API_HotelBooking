@@ -40,18 +40,17 @@ namespace BusinessLogic.Services
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
-            // delete product by id
-            var product = roomsR.GetByID(id);
+            var room = roomsR.GetByID(id);
 
-            if (product == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
+            if (room == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
 
-            roomsR.Delete(product);
+            roomsR.Delete(room);
             roomsR.Save();
         }
 
-        public void Edit(RoomDto product)
+        public void Edit(RoomDto room)
         {
-            roomsR.Update(mapper.Map<Room>(product));
+            roomsR.Update(mapper.Map<Room>(room));
             roomsR.Save();
         }
 
@@ -70,10 +69,6 @@ namespace BusinessLogic.Services
 
         public IEnumerable<RoomDto> Get(IEnumerable<int> ids)
         {
-            //return mapper.Map<List<ProductDto>>(context.Products
-            //    .Include(x => x.Category)
-            //    .Where(x => ids.Contains(x.Id))
-            //    .ToList());
             return mapper.Map<List<RoomDto>>(roomsR.Get(x => ids.Contains(x.Id), includeProperties: "Category"));
         }
 
