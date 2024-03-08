@@ -29,15 +29,15 @@ namespace HotelProject.Controllers
         }
 
         [HttpPost("refreshTokens")]
-        public IActionResult RefreshTokens(UserTokens tokens)
+        public async Task<IActionResult> RefreshTokens(UserTokens tokens)
         {
-            return Ok(accountsService.RefreshTokens(tokens));
+            return Ok(await accountsService.RefreshTokens(tokens));
         }
 
         [HttpPost("logout")]
-        public IActionResult Logout(LogoutModel model)
+        public async Task<IActionResult> Logout(LogoutModel model)
         {
-            accountsService.Logout(model.RefreshToken);
+            await accountsService.Logout(model.RefreshToken);
             return Ok();
         }
     }

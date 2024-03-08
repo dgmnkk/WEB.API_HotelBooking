@@ -3,6 +3,7 @@ using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Repositories;
+using BusinessLogic.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,16 +36,16 @@ namespace BusinessLogic.Services
             roomsR.Save();
         }
 
-
         public void Delete(int id)
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
-            var room = roomsR.GetByID(id);
+            // delete product by id
+            var product = roomsR.GetById(id);
 
-            if (room == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
+            if (product == null) throw new HttpException(Errors.RoomNotFound, HttpStatusCode.NotFound);
 
-            roomsR.Delete(room);
+            roomsR.Delete(product);
             roomsR.Save();
         }
 
@@ -54,33 +55,53 @@ namespace BusinessLogic.Services
             roomsR.Save();
         }
 
-
-        public RoomDto? Get(int id)
+        public async Task<RoomDto?> Get(int id)
         {
             if (id < 0) throw new HttpException(Errors.IdMustPositive, HttpStatusCode.BadRequest);
 
-            var item = roomsR.GetByID(id);
-            if (item == null) throw new HttpException(Errors.ProductNotFound, HttpStatusCode.NotFound);
+            var item = await roomsR.GetItemBySpec(new RoomSpecs.ById(id));
+            if (item == null) throw new HttpException(Errors.RoomNotFound, HttpStatusCode.NotFound);
 
+            // load related entity
+            //context.Entry(item).Reference(x => x.Category).Load();
+
+            // convert entity type to DTO
+            // 1 - using manually (handmade)
+            //var dto = new ProductDto()
+            //{
+            //    Id = product.Id,
+            //    CategoryId = product.CategoryId,
+            //    Description = product.Description,
+            //    Discount = product.Discount,
+            //    ImageUrl = product.ImageUrl,
+            //    InStock = product.InStock,
+            //    Name = product.Name,
+            //    Price = product.Price,
+            //    CategoryName = product.Category.Name
+            //};
+            // 2 - using AutoMapper
             var dto = mapper.Map<RoomDto>(item);
 
             return dto;
         }
 
-        public IEnumerable<RoomDto> Get(IEnumerable<int> ids)
+        public async Task<IEnumerable<RoomDto>> Get(IEnumerable<int> ids)
         {
-            return mapper.Map<List<RoomDto>>(roomsR.Get(x => ids.Contains(x.Id), includeProperties: "Category"));
+            //return mapper.Map<List<ProductDto>>(context.Products
+            //    .Include(x => x.Category)
+            //    .Where(x => ids.Contains(x.Id))
+            //    .ToList());
+            return mapper.Map<List<RoomDto>>(await roomsR.GetListBySpec(new RoomSpecs.ByIds(ids)));
         }
 
-        public IEnumerable<RoomDto> GetAll()
+        public async Task<IEnumerable<RoomDto>> GetAll()
         {
-            return mapper.Map<List<RoomDto>>(roomsR.GetAll());
+            return mapper.Map<List<RoomDto>>(await roomsR.GetListBySpec(new RoomSpecs.All()));
         }
 
         public IEnumerable<CategoryDto> GetAllCategories()
         {
             return mapper.Map<List<CategoryDto>>(categoriesR.GetAll());
         }
-
     }
 }

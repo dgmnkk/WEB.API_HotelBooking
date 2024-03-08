@@ -12,8 +12,8 @@ namespace DataAccess.Data
         public int Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-        public DateOnly CheckInDate { get; set; }
-        public DateOnly CheckOutDate { get; set; }
+        public DateTime CheckInDate { get; set; }
+        public DateTime CheckOutDate { get; set; }
         public int RoomId { get; set; }
         public Room Room { get; set; }
     }

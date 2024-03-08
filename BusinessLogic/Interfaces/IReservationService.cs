@@ -9,7 +9,7 @@ namespace BusinessLogic.Interfaces
 {
     internal interface IReservationService
     {
-        IEnumerable<ReservationDto> GetAllByUser(string userId);
-        Task Create(string userId, int id, DateOnly date1, DateOnly date2);
+        Task<IEnumerable<ReservationDto>> GetAllByUser(string userId);
+        Task Create(string userId, int id, DateTime date1, DateTime date2);
     }
 }

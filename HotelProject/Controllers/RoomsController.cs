@@ -20,17 +20,17 @@ namespace HotelProject.Controllers
 
         [HttpGet("all")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.ADULT)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(roomsService.GetAll());
+            return Ok(await roomsService.GetAll());
         }
 
         //[Authorize] // based on cookies
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // based on JWT
         [HttpGet("{id:int}")]
-        public IActionResult Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            return Ok(roomsService.Get(id));
+            return Ok(await roomsService.Get(id));
         }
 
         [HttpPost]

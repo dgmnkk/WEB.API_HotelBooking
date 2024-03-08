@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Specifications;
 using DataAccess.Data;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -19,7 +20,6 @@ namespace BusinessLogic.Services
         private readonly IRepository<Reservation> reservationR;
         private readonly IRepository<Room> roomR;
         private readonly IEmailSender emailSender;
-        //private readonly IViewRender viewRender;
 
         public ReservationsService(IMapper mapper,
                             IRepository<Reservation> reservationR,
@@ -30,10 +30,9 @@ namespace BusinessLogic.Services
             this.reservationR = reservationR;
             this.roomR = roomR;
             this.emailSender = emailSender;
-            //this.viewRender = viewRender;
         }
 
-        public async Task Create(string userId, int id, DateOnly date1, DateOnly date2)
+        public async Task Create(string userId, int id, DateTime date1, DateTime date2)
         {
             var reservation = new Reservation()
             {
@@ -47,9 +46,9 @@ namespace BusinessLogic.Services
             reservationR.Save();
         }
 
-        IEnumerable<ReservationDto> IReservationService.GetAllByUser(string userId)
+        public async Task<IEnumerable<ReservationDto>> GetAllByUser(string userId)
         {
-            var items = reservationR.Get(x => x.UserId == userId, includeProperties: "Room");
+            var items = await reservationR.GetListBySpec(new ReservationSpecs.ByUser(userId));
             return mapper.Map<IEnumerable<ReservationDto>>(items);
         }
     }

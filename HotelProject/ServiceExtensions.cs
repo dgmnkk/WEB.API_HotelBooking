@@ -1,10 +1,12 @@
 ﻿using System.Text;
 using BusinessLogic.Helpers;
 using DataAccess.Data;
+using BusinessLogic.Entities;
 using HotelProject.Requirements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Hangfire;
 
 namespace HotelProject
 {
@@ -15,6 +17,15 @@ namespace HotelProject
     }
     public static class ServiceExtensions
     {
+        public static void AddHangfire(this IServiceCollection services, string connectionString)
+        {
+            services.AddHangfire(config =>
+            {
+                config.UseSqlServerStorage(connectionString);
+            });
+
+            services.AddHangfireServer();
+        }
         public static void AddRequirements(this IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();

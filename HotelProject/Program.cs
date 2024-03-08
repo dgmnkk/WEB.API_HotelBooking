@@ -5,6 +5,7 @@ using HotelProject;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using DataAccess;
 using BusinessLogic;
+using Hangfire;
 
 namespace HotelProject
 {
@@ -35,7 +36,7 @@ namespace HotelProject
 
             builder.Services.AddCustomServices();
             //builder.Services.AddScoped<IViewRender, ViewRender>();
-
+            builder.Services.AddHangfire(connStr);
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -57,6 +58,9 @@ namespace HotelProject
             app.UseMiddleware<GlobalErrorHandler>();
 
             app.UseAuthorization();
+
+            app.UseHangfireDashboard("/dash");
+            JobConfigurator.AddJobs();
 
             app.MapControllers();
 

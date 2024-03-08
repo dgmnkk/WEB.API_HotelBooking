@@ -11,9 +11,13 @@ namespace BusinessLogic.Interfaces
     {
         Task Register(RegisterModel model);
         Task<LoginResponseDto> Login(LoginModel model);
-        void Logout(string refreshToken);
-        UserTokens RefreshTokens(UserTokens tokens);
+        Task Logout(string refreshToken);
+        Task<UserTokens> RefreshTokens(UserTokens tokens);
+
+        Task RemoveExpiredRefreshTokens();
+
     }
+
     public class ResetToken
     {
         public string Token { get; set; }

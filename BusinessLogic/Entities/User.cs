@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BusinessLogic.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.Data
 {
@@ -9,5 +10,7 @@ namespace DataAccess.Data
         public string Surname { get; set; }
         public DateTime Birthdate { get; set; }
         public ICollection<Reservation>? Reservations { get; set; }
+        public ClientType ClientType { get; set; }
+        public ICollection<RefreshToken>? RefreshTokens { get; set; }
     }
 }
